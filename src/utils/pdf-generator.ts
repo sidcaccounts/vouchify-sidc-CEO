@@ -2,7 +2,6 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { VouchingBillData, VouchingBillTotals, SHORT_FORM_CODES } from '@/types/vouching-bill';
 import { convertToWords, formatCurrency } from './calculations';
-import NotoSansBengaliUrl from '@/assets/fonts/NotoSansBengali-Regular.ttf?url';
 
 // Extend jsPDF type to include autoTable
 declare module 'jspdf' {
@@ -12,29 +11,10 @@ declare module 'jspdf' {
       finalY: number;
     };
   }
-
 }
 
-// Load custom font (Noto Sans Bengali) once for Taka sign support
-let notoLoaded = false;
-const loadNotoFont = async (doc: jsPDF) => {
-  if (notoLoaded) return;
-  const res = await fetch(NotoSansBengaliUrl);
-  const buffer = await res.arrayBuffer();
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
-  const base64 = btoa(binary);
-  doc.addFileToVFS('NotoSansBengali-Regular.ttf', base64);
-  doc.addFont('NotoSansBengali-Regular.ttf', 'NotoSansBengali', 'normal');
-  notoLoaded = true;
-};
-
-export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTotals) => {
+export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) => {
   const doc = new jsPDF();
-  
-  // Set default font for consistent rendering
-  doc.setFont('helvetica', 'normal');
   
   // Set colors to match logo - golden/brown theme
   const primaryColor = [139, 115, 85] as [number, number, number]; // Brown from logo
@@ -122,7 +102,7 @@ export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTo
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal' }
       },
       styles: { 
         fontSize: 10,
@@ -144,7 +124,7 @@ export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTo
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal' }
       },
       styles: { 
         fontSize: 10,
@@ -166,7 +146,7 @@ export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTo
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal' }
       },
       styles: { 
         fontSize: 10,
@@ -196,7 +176,7 @@ export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTo
         0: { cellWidth: 15, halign: 'center', fontStyle: 'normal' },
         1: { cellWidth: 25, fontStyle: 'normal' },
         2: { cellWidth: 60, fontStyle: 'normal' },
-        3: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' },
+        3: { cellWidth: 40, halign: 'right', fontStyle: 'normal' },
         4: { cellWidth: 40, fontStyle: 'normal' }
       },
       styles: { 
@@ -208,13 +188,6 @@ export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTo
   }
   
   // Totals Section
-  const totalsData = [
-    ['Total Received', totals.totalReceived.toString() + ' ৳'],
-    ['Total Cost', totals.totalCost.toString() + ' ৳'],
-    ['Cash in Hand', totals.cashInHand.toString() + ' ৳'],
-    ['Cash in Bkash/Nagad', totals.cashInBkashNagad.toString() + ' ৳']
-  ];
-  
   autoTable(doc, {
     startY: yPosition,
     body: [
@@ -233,7 +206,7 @@ export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTo
     margin: { left: 20, right: 120 },
     columnStyles: {
       0: { cellWidth: 'auto', fontStyle: 'bold' },
-      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold', font: 'NotoSansBengali', overflow: 'hidden' }
+      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold' }
     }
   });
   

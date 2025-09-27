@@ -41,9 +41,9 @@ export const VouchingBillForm = () => {
     setTotals(newTotals);
   }, [data]);
 
-  const handleGeneratePDF = async () => {
+  const handleGeneratePDF = () => {
     try {
-      await generatePDF(data, totals);
+      generatePDF(data, totals);
       toast({
         title: "PDF Generated Successfully",
         description: "Your vouching bill has been downloaded as a PDF.",
