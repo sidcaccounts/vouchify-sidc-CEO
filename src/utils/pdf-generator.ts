@@ -115,7 +115,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bank Name', 'Amount']],
-      body: data.bankWithdrawals.map(entry => [entry.name, `৳ ${entry.amount.toLocaleString()}`]),
+      body: data.bankWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString()]),
       theme: 'grid',
       headStyles: { fillColor: lightTeal, textColor: 0, fontStyle: 'bold', fontSize: 11 },
       alternateRowStyles: { fillColor: [249, 249, 249] },
@@ -138,7 +138,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Credit Card', 'Amount']],
-      body: data.creditCardWithdrawals.map(entry => [entry.name, `৳ ${entry.amount.toLocaleString()}`]),
+      body: data.creditCardWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString()]),
       theme: 'grid',
       headStyles: { fillColor: lightPurple, textColor: 0, fontStyle: 'bold', fontSize: 11 },
       alternateRowStyles: { fillColor: [249, 249, 249] },
@@ -161,7 +161,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bkash/Nagad', 'Amount']],
-      body: data.bkashNagadWithdrawals.map(entry => [entry.name, `৳ ${entry.amount.toLocaleString()}`]),
+      body: data.bkashNagadWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString()]),
       theme: 'grid',
       headStyles: { fillColor: lightOrange, textColor: 0, fontStyle: 'bold', fontSize: 11 },
       alternateRowStyles: { fillColor: [249, 249, 249] },
@@ -188,7 +188,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
         String(index + 1).padStart(2, '0'),
         entry.costHead,
         entry.description,
-        `৳ ${entry.amount.toLocaleString()}`,
+        entry.amount.toLocaleString(),
         entry.remarks
       ]),
       theme: 'grid',
@@ -215,10 +215,10 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   autoTable(doc, {
     startY: yPosition,
     body: [
-      ['Total Received', `৳ ${totals.totalReceived.toLocaleString()}`],
-      ['Total Cost', `৳ ${totals.totalCost.toLocaleString()}`],
-      ['Cash in Hand', `৳ ${totals.cashInHand.toLocaleString()}`],
-      ['Cash in Bkash/Nagad', `৳ ${totals.cashInBkashNagad.toLocaleString()}`]
+      ['Total Received', totals.totalReceived.toLocaleString()],
+      ['Total Cost', totals.totalCost.toLocaleString()],
+      ['Cash in Hand', totals.cashInHand.toLocaleString()],
+      ['Cash in Bkash/Nagad', totals.cashInBkashNagad.toLocaleString()]
     ],
     theme: 'grid',
     styles: { 
