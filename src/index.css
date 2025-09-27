@@ -46,9 +46,9 @@ All colors MUST be HSL.
     --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
-    /* Brand colors */
-    --brand-primary: 184 78% 39%;
-    --brand-secondary: 174 70% 41%;
+    /* Brand colors - Logo inspired golden/brown theme */
+    --brand-primary: 45 65% 45%;
+    --brand-secondary: 32 85% 65%;
     --brand-gold: 45 85% 63%;
 
     /* Gradients */
@@ -119,9 +119,9 @@ All colors MUST be HSL.
     --info: 199 89% 48%;
     --info-foreground: 0 0% 100%;
 
-    /* Brand colors */
-    --brand-primary: 184 78% 39%;
-    --brand-secondary: 174 70% 41%;
+    /* Brand colors - Logo inspired golden/brown theme */
+    --brand-primary: 45 65% 45%;
+    --brand-secondary: 32 85% 65%;
     --brand-gold: 45 85% 63%;
 
     /* Gradients */

@@ -16,10 +16,10 @@ declare module 'jspdf' {
 export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) => {
   const doc = new jsPDF();
   
-  // Set colors
-  const primaryColor = [26, 148, 147] as [number, number, number]; // Teal
-  const secondaryColor = [45, 183, 179] as [number, number, number]; // Light teal
-  const goldColor = [255, 193, 7] as [number, number, number]; // Gold
+  // Set colors to match logo - golden/brown theme
+  const primaryColor = [139, 115, 85] as [number, number, number]; // Brown from logo
+  const secondaryColor = [218, 165, 32] as [number, number, number]; // Gold from logo  
+  const goldColor = [255, 193, 7] as [number, number, number]; // Bright gold
   
   let yPosition = 20;
   
