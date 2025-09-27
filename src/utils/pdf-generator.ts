@@ -16,147 +16,170 @@ declare module 'jspdf' {
 export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) => {
   const doc = new jsPDF();
   
-  // Set colors to match logo - golden/brown theme
-  const primaryColor = [139, 115, 85] as [number, number, number]; // Brown from logo
-  const secondaryColor = [218, 165, 32] as [number, number, number]; // Gold from logo  
-  const goldColor = [255, 193, 7] as [number, number, number]; // Bright gold
+  // Modern color palette
+  const deepBlue = [11, 61, 145] as [number, number, number]; // Deep blue header
+  const teal = [0, 121, 107] as [number, number, number]; // Teal accent
+  const gold = [251, 192, 45] as [number, number, number]; // Gold highlight
+  const lightTeal = [178, 223, 219] as [number, number, number]; // Light teal for bank
+  const lightPurple = [206, 147, 216] as [number, number, number]; // Light purple for credit card
+  const lightOrange = [255, 183, 77] as [number, number, number]; // Light orange for bkash/nagad
+  const softBlue = [227, 242, 253] as [number, number, number]; // Soft blue for reference
+  const lightGray = [245, 245, 245] as [number, number, number]; // Light gray
   
   let yPosition = 20;
   
-  // Header with company info
-  doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.rect(0, 0, 210, 40, 'F');
+  // Header with gradient effect (simulate with rectangle)
+  doc.setFillColor(deepBlue[0], deepBlue[1], deepBlue[2]);
+  doc.rect(0, 0, 210, 45, 'F');
+  
+  // Add teal accent strip
+  doc.setFillColor(teal[0], teal[1], teal[2]);
+  doc.rect(0, 40, 210, 5, 'F');
   
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(18);
+  doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.text("SOHANI'S INTERIOR DESIGN & CONSTRUCTION", 105, 20, { align: 'center' });
+  doc.text("SOHANI'S INTERIOR DESIGN & CONSTRUCTION", 105, 22, { align: 'center' });
   
-  doc.setFontSize(12);
-  doc.setFont('helvetica', 'normal');
-  doc.text('(SiD&C)', 105, 28, { align: 'center' });
-  
-  yPosition = 50;
-  
-  // Form title
-  doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-  doc.rect(20, yPosition - 5, 170, 15, 'F');
-  doc.setTextColor(255, 255, 255);
   doc.setFontSize(14);
+  doc.setFont('helvetica', 'normal');
+  doc.text('(SiD&C)', 105, 32, { align: 'center' });
+  
+  yPosition = 60;
+  
+  // Form title with gold banner
+  doc.setFillColor(gold[0], gold[1], gold[2]);
+  doc.rect(20, yPosition - 8, 170, 18, 'F');
+  doc.setTextColor(0, 0, 0);  // Black text on gold
+  doc.setFontSize(16);
   doc.setFont('helvetica', 'bold');
-  doc.text('Vouching & Non-Vouching Bill', 105, yPosition + 5, { align: 'center' });
+  doc.text('Vouching & Non-Vouching Bill', 105, yPosition + 2, { align: 'center' });
   
   yPosition += 25;
   
-  // Name and Date
+  // Form Information Section - Light gray box
+  doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+  doc.rect(18, yPosition - 5, 174, 20, 'F');
+  doc.setDrawColor(200, 200, 200);
+  doc.setLineWidth(0.5);
+  doc.rect(18, yPosition - 5, 174, 20, 'S');
+  
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(11);
+  doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Name: ${data.name}`, 20, yPosition);
-  doc.text(`Date: ${data.date}`, 140, yPosition);
+  doc.text(`Name: ${data.name}`, 25, yPosition + 5);
+  doc.text(`Date: ${data.date}`, 140, yPosition + 5);
   
-  yPosition += 15;
+  yPosition += 25;
   
-  // Short Form Reference
-  doc.setFillColor(240, 248, 255);
-  doc.rect(20, yPosition - 5, 170, 35, 'F');
-  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  // Short Form Reference - Soft blue info box
+  doc.setFillColor(softBlue[0], softBlue[1], softBlue[2]);
+  doc.rect(18, yPosition - 5, 174, 40, 'F');
+  doc.setDrawColor(100, 149, 237);
+  doc.setLineWidth(0.5);
+  doc.rect(18, yPosition - 5, 174, 40, 'S');
+  
+  doc.setTextColor(deepBlue[0], deepBlue[1], deepBlue[2]);
   doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
   doc.text('Short Form Reference:', 25, yPosition + 5);
   
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  let shortFormY = yPosition + 12;
+  doc.setFontSize(10);
+  let shortFormY = yPosition + 15;
   let shortFormX = 25;
   Object.entries(SHORT_FORM_CODES).forEach(([code, meaning], index) => {
     if (index === 3) {
-      shortFormY += 8;
+      shortFormY += 10;
       shortFormX = 25;
     }
     doc.setFont('helvetica', 'bold');
     doc.text(`${code}:`, shortFormX, shortFormY);
     doc.setFont('helvetica', 'normal');
-    doc.text(meaning, shortFormX + 15, shortFormY);
-    shortFormX += 55;
+    doc.text(meaning, shortFormX + 18, shortFormY);
+    shortFormX += 60;
   });
   
-  yPosition += 45;
+  yPosition += 50;
   
-  // Withdraw From Section
-  doc.setFontSize(11);
-  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  // Withdraw From Section Title
+  doc.setFontSize(14);
+  doc.setTextColor(deepBlue[0], deepBlue[1], deepBlue[2]);
   doc.setFont('helvetica', 'bold');
   doc.text('Withdraw From:', 20, yPosition);
   
-  yPosition += 10;
+  yPosition += 15;
   
-  // Bank Withdrawals
+  // Bank Withdrawals - Light teal header
   if (data.bankWithdrawals.length > 0) {
     autoTable(doc, {
       startY: yPosition,
       head: [['Bank Name', 'Amount']],
-      body: data.bankWithdrawals.map(entry => [entry.name, '৳ ' + entry.amount.toString()]),
+      body: data.bankWithdrawals.map(entry => [entry.name, `৳ ${entry.amount.toLocaleString()}`]),
       theme: 'grid',
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [245, 245, 245] },
+      headStyles: { fillColor: lightTeal, textColor: 0, fontStyle: 'bold', fontSize: 11 },
+      alternateRowStyles: { fillColor: [249, 249, 249] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
       },
       styles: { 
         fontSize: 10,
-        cellPadding: 4
+        cellPadding: 5,
+        font: 'helvetica'
       }
     });
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    yPosition = (doc as any).lastAutoTable.finalY + 15;
   }
   
-  // Credit Card Withdrawals
+  // Credit Card Withdrawals - Light purple header
   if (data.creditCardWithdrawals.length > 0) {
     autoTable(doc, {
       startY: yPosition,
       head: [['Credit Card', 'Amount']],
-      body: data.creditCardWithdrawals.map(entry => [entry.name, '৳ ' + entry.amount.toString()]),
+      body: data.creditCardWithdrawals.map(entry => [entry.name, `৳ ${entry.amount.toLocaleString()}`]),
       theme: 'grid',
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [245, 245, 245] },
+      headStyles: { fillColor: lightPurple, textColor: 0, fontStyle: 'bold', fontSize: 11 },
+      alternateRowStyles: { fillColor: [249, 249, 249] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
       },
       styles: { 
         fontSize: 10,
-        cellPadding: 4
+        cellPadding: 5,
+        font: 'helvetica'
       }
     });
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    yPosition = (doc as any).lastAutoTable.finalY + 15;
   }
   
-  // Bkash/Nagad Withdrawals
+  // Bkash/Nagad Withdrawals - Light orange header
   if (data.bkashNagadWithdrawals.length > 0) {
     autoTable(doc, {
       startY: yPosition,
       head: [['Bkash/Nagad', 'Amount']],
-      body: data.bkashNagadWithdrawals.map(entry => [entry.name, '৳ ' + entry.amount.toString()]),
+      body: data.bkashNagadWithdrawals.map(entry => [entry.name, `৳ ${entry.amount.toLocaleString()}`]),
       theme: 'grid',
-      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
-      alternateRowStyles: { fillColor: [245, 245, 245] },
+      headStyles: { fillColor: lightOrange, textColor: 0, fontStyle: 'bold', fontSize: 11 },
+      alternateRowStyles: { fillColor: [249, 249, 249] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'bold' }
       },
       styles: { 
         fontSize: 10,
-        cellPadding: 4
+        cellPadding: 5,
+        font: 'helvetica'
       }
     });
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    yPosition = (doc as any).lastAutoTable.finalY + 15;
   }
   
-  // Cost Entry Table
+  // Cost Entry Table - Main dynamic table with alternating rows
   if (data.costEntries.length > 0) {
     autoTable(doc, {
       startY: yPosition,
@@ -165,44 +188,46 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
         String(index + 1).padStart(2, '0'),
         entry.costHead,
         entry.description,
-        '৳ ' + entry.amount.toString(),
+        `৳ ${entry.amount.toLocaleString()}`,
         entry.remarks
       ]),
       theme: 'grid',
-      headStyles: { fillColor: secondaryColor, textColor: 255, fontStyle: 'bold' },
+      headStyles: { fillColor: teal, textColor: 255, fontStyle: 'bold', fontSize: 11 },
       alternateRowStyles: { fillColor: [248, 249, 250] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 15, halign: 'center', fontStyle: 'normal' },
         1: { cellWidth: 25, fontStyle: 'normal' },
         2: { cellWidth: 60, fontStyle: 'normal' },
-        3: { cellWidth: 40, halign: 'right', fontStyle: 'normal' },
+        3: { cellWidth: 40, halign: 'right', fontStyle: 'bold' },
         4: { cellWidth: 40, fontStyle: 'normal' }
       },
       styles: { 
         fontSize: 10,
-        cellPadding: 4
+        cellPadding: 5,
+        font: 'helvetica'
       }
     });
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    yPosition = (doc as any).lastAutoTable.finalY + 20;
   }
   
-  // Totals Section
+  // Summary Section - Totals box with gold highlight
   autoTable(doc, {
     startY: yPosition,
     body: [
-      ['Total Received', '৳ ' + totals.totalReceived.toString()],
-      ['Total Cost', '৳ ' + totals.totalCost.toString()],
-      ['Cash in Hand', '৳ ' + totals.cashInHand.toString()],
-      ['Cash in Bkash/Nagad', '৳ ' + totals.cashInBkashNagad.toString()]
+      ['Total Received', `৳ ${totals.totalReceived.toLocaleString()}`],
+      ['Total Cost', `৳ ${totals.totalCost.toLocaleString()}`],
+      ['Cash in Hand', `৳ ${totals.cashInHand.toLocaleString()}`],
+      ['Cash in Bkash/Nagad', `৳ ${totals.cashInBkashNagad.toLocaleString()}`]
     ],
     theme: 'grid',
     styles: { 
-      fontSize: 11, 
+      fontSize: 12, 
       fontStyle: 'bold',
-      cellPadding: 4
+      cellPadding: 6,
+      font: 'helvetica'
     },
-    alternateRowStyles: { fillColor: [255, 248, 225] },
+    alternateRowStyles: { fillColor: [255, 248, 225] }, // Gold background
     margin: { left: 20, right: 120 },
     columnStyles: {
       0: { cellWidth: 'auto', fontStyle: 'bold' },
@@ -210,50 +235,85 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     }
   });
   
-  yPosition = (doc as any).lastAutoTable.finalY + 15;
+  yPosition = (doc as any).lastAutoTable.finalY + 20;
   
-  // Amount in Words
-  doc.setFillColor(goldColor[0], goldColor[1], goldColor[2]);
-  doc.rect(20, yPosition - 5, 170, 15, 'F');
+  // Amount in Words - Gold banner
+  doc.setFillColor(gold[0], gold[1], gold[2]);
+  doc.rect(20, yPosition - 8, 170, 18, 'F');
   doc.setTextColor(0, 0, 0);
   doc.setFont('helvetica', 'bold');
-  doc.text('Amount in Words:', 25, yPosition + 5);
+  doc.setFontSize(12);
+  doc.text('Amount in Words:', 25, yPosition + 2);
   
   yPosition += 20;
-  doc.setFont('helvetica', 'normal');
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(11);
   doc.text(convertToWords(totals.totalReceived), 25, yPosition);
   
-  yPosition += 20;
+  yPosition += 25;
   
-  // Summary fields
+  // Summary fields section
   if (data.dueFrom || data.payableTo || data.charity) {
+    // Calculate height based on number of fields
+    const fieldCount = (data.dueFrom ? 1 : 0) + (data.payableTo ? 1 : 0) + (data.charity ? 1 : 0);
+    
+    // Summary header with light background
+    doc.setFillColor(lightGray[0], lightGray[1], lightGray[2]);
+    doc.rect(20, yPosition - 5, 170, 8 * fieldCount + 15, 'F');
+    doc.setDrawColor(180, 180, 180);
+    doc.setLineWidth(0.5);
+    doc.rect(20, yPosition - 5, 170, 8 * fieldCount + 15, 'S');
+    
+    doc.setTextColor(deepBlue[0], deepBlue[1], deepBlue[2]);
     doc.setFont('helvetica', 'bold');
-    doc.text('Summary:', 20, yPosition);
-    yPosition += 10;
+    doc.setFontSize(12);
+    doc.text('Additional Summary:', 25, yPosition + 5);
+    yPosition += 15;
     
     doc.setFont('helvetica', 'normal');
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
     if (data.dueFrom) {
-      doc.text(`Due From: ${data.dueFrom}`, 25, yPosition);
+      doc.text(`Due From: ${data.dueFrom}`, 30, yPosition);
       yPosition += 8;
     }
     if (data.payableTo) {
-      doc.text(`Payable To: ${data.payableTo}`, 25, yPosition);
+      doc.text(`Payable To: ${data.payableTo}`, 30, yPosition);
       yPosition += 8;
     }
     if (data.charity) {
-      doc.text(`Charity: ${data.charity}`, 25, yPosition);
+      doc.text(`Charity: ${data.charity}`, 30, yPosition);
       yPosition += 8;
     }
+    yPosition += 10;
   }
   
-  // Signature areas
-  yPosition += 20;
-  doc.setFont('helvetica', 'normal');
-  doc.text('_________________', 30, yPosition);
-  doc.text('_________________', 130, yPosition);
-  doc.text('Checked by ACT', 30, yPosition + 8);
-  doc.text('Sign by CEO', 130, yPosition + 8);
+  // Footer separator line
+  yPosition += 15;
+  doc.setDrawColor(deepBlue[0], deepBlue[1], deepBlue[2]);
+  doc.setLineWidth(1);
+  doc.line(20, yPosition, 190, yPosition);
   
-  // Save the PDF
-  doc.save(`Vouching_Bill_${data.name.replace(/\s+/g, '_')}_${data.date}.pdf`);
+  // Signature areas with dotted lines
+  yPosition += 20;
+  doc.setTextColor(0, 0, 0);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  
+  // Create dotted lines for signatures
+  doc.setLineWidth(0.5);
+  doc.setLineDashPattern([2, 2], 0);
+  doc.line(30, yPosition, 90, yPosition);
+  doc.line(130, yPosition, 180, yPosition);
+  
+  // Reset line pattern
+  doc.setLineDashPattern([], 0);
+  
+  doc.setFont('helvetica', 'normal');
+  doc.text('Checked by ACT', 30, yPosition + 10);
+  doc.text('Sign by CEO', 130, yPosition + 10);
+  
+  // Save the PDF with formatted filename
+  const safeFileName = data.name.replace(/[^a-zA-Z0-9]/g, '_');
+  doc.save(`Vouching_Bill_${safeFileName}_${data.date}.pdf`);
 };
