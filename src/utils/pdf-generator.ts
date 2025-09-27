@@ -16,6 +16,9 @@ declare module 'jspdf' {
 export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) => {
   const doc = new jsPDF();
   
+  // Set default font for consistent rendering
+  doc.setFont('helvetica', 'normal');
+  
   // Set colors to match logo - golden/brown theme
   const primaryColor = [139, 115, 85] as [number, number, number]; // Brown from logo
   const secondaryColor = [218, 165, 32] as [number, number, number]; // Gold from logo  
@@ -95,11 +98,21 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bank Name', 'Amount']],
-      body: data.bankWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString('en-US') + ' ৳']),
+      body: data.bankWithdrawals.map(entry => [entry.name, entry.amount.toString() + ' ৳']),
       theme: 'grid',
-      headStyles: { fillColor: primaryColor, textColor: 255 },
+      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [245, 245, 245] },
-      margin: { left: 20, right: 20 }
+      margin: { left: 20, right: 20 },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+      },
+      styles: { 
+        font: 'helvetica',
+        fontSize: 10,
+        cellPadding: 4,
+        overflow: 'linebreak'
+      }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
   }
@@ -109,11 +122,21 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Credit Card', 'Amount']],
-      body: data.creditCardWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString('en-US') + ' ৳']),
+      body: data.creditCardWithdrawals.map(entry => [entry.name, entry.amount.toString() + ' ৳']),
       theme: 'grid',
-      headStyles: { fillColor: primaryColor, textColor: 255 },
+      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [245, 245, 245] },
-      margin: { left: 20, right: 20 }
+      margin: { left: 20, right: 20 },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+      },
+      styles: { 
+        font: 'helvetica',
+        fontSize: 10,
+        cellPadding: 4,
+        overflow: 'linebreak'
+      }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
   }
@@ -123,11 +146,21 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bkash/Nagad', 'Amount']],
-      body: data.bkashNagadWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString('en-US') + ' ৳']),
+      body: data.bkashNagadWithdrawals.map(entry => [entry.name, entry.amount.toString() + ' ৳']),
       theme: 'grid',
-      headStyles: { fillColor: primaryColor, textColor: 255 },
+      headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [245, 245, 245] },
-      margin: { left: 20, right: 20 }
+      margin: { left: 20, right: 20 },
+      columnStyles: {
+        0: { cellWidth: 'auto' },
+        1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+      },
+      styles: { 
+        font: 'helvetica',
+        fontSize: 10,
+        cellPadding: 4,
+        overflow: 'linebreak'
+      }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
   }
@@ -141,19 +174,25 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
         String(index + 1).padStart(2, '0'),
         entry.costHead,
         entry.description,
-        entry.amount.toLocaleString('en-US') + ' ৳',
+        entry.amount.toString() + ' ৳',
         entry.remarks
       ]),
       theme: 'grid',
-      headStyles: { fillColor: secondaryColor, textColor: 255 },
+      headStyles: { fillColor: secondaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [248, 249, 250] },
       margin: { left: 20, right: 20 },
       columnStyles: {
-        0: { cellWidth: 15, halign: 'center' },
-        1: { cellWidth: 25 },
-        2: { cellWidth: 60 },
-        3: { cellWidth: 30, halign: 'right' },
-        4: { cellWidth: 40 }
+        0: { cellWidth: 15, halign: 'center', fontStyle: 'normal' },
+        1: { cellWidth: 25, fontStyle: 'normal' },
+        2: { cellWidth: 60, fontStyle: 'normal' },
+        3: { cellWidth: 30, halign: 'right', fontStyle: 'normal' },
+        4: { cellWidth: 40, fontStyle: 'normal' }
+      },
+      styles: { 
+        font: 'helvetica',
+        fontSize: 10,
+        cellPadding: 4,
+        overflow: 'linebreak'
       }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
@@ -161,19 +200,28 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   // Totals Section
   const totalsData = [
-    ['Total Received', totals.totalReceived.toLocaleString('en-US') + ' ৳'],
-    ['Total Cost', totals.totalCost.toLocaleString('en-US') + ' ৳'],
-    ['Cash in Hand', totals.cashInHand.toLocaleString('en-US') + ' ৳'],
-    ['Cash in Bkash/Nagad', totals.cashInBkashNagad.toLocaleString('en-US') + ' ৳']
+    ['Total Received', totals.totalReceived.toString() + ' ৳'],
+    ['Total Cost', totals.totalCost.toString() + ' ৳'],
+    ['Cash in Hand', totals.cashInHand.toString() + ' ৳'],
+    ['Cash in Bkash/Nagad', totals.cashInBkashNagad.toString() + ' ৳']
   ];
   
   autoTable(doc, {
     startY: yPosition,
     body: totalsData,
     theme: 'grid',
-    styles: { fontSize: 11, fontStyle: 'bold' },
+    styles: { 
+      fontSize: 11, 
+      fontStyle: 'bold',
+      font: 'helvetica',
+      cellPadding: 4
+    },
     alternateRowStyles: { fillColor: [255, 248, 225] },
-    margin: { left: 20, right: 120 }
+    margin: { left: 20, right: 120 },
+    columnStyles: {
+      0: { cellWidth: 'auto', fontStyle: 'bold' },
+      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold' }
+    }
   });
   
   yPosition = (doc as any).lastAutoTable.finalY + 15;
