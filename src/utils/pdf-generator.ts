@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { VouchingBillData, VouchingBillTotals, SHORT_FORM_CODES } from '@/types/vouching-bill';
 import { convertToWords, formatCurrency } from './calculations';
+import NotoSansBengaliUrl from '@/assets/fonts/NotoSansBengali-Regular.ttf?url';
 
 // Extend jsPDF type to include autoTable
 declare module 'jspdf' {
@@ -11,9 +12,25 @@ declare module 'jspdf' {
       finalY: number;
     };
   }
+
 }
 
-export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) => {
+// Load custom font (Noto Sans Bengali) once for Taka sign support
+let notoLoaded = false;
+const loadNotoFont = async (doc: jsPDF) => {
+  if (notoLoaded) return;
+  const res = await fetch(NotoSansBengaliUrl);
+  const buffer = await res.arrayBuffer();
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+  const base64 = btoa(binary);
+  doc.addFileToVFS('NotoSansBengali-Regular.ttf', base64);
+  doc.addFont('NotoSansBengali-Regular.ttf', 'NotoSansBengali', 'normal');
+  notoLoaded = true;
+};
+
+export const generatePDF = async (data: VouchingBillData, totals: VouchingBillTotals) => {
   const doc = new jsPDF();
   
   // Set default font for consistent rendering
@@ -98,20 +115,18 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bank Name', 'Amount']],
-      body: data.bankWithdrawals.map(entry => [entry.name, entry.amount.toString() + ' ৳']),
+      body: data.bankWithdrawals.map(entry => [entry.name, '৳ ' + entry.amount.toString()]),
       theme: 'grid',
       headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [245, 245, 245] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' }
       },
       styles: { 
-        font: 'helvetica',
         fontSize: 10,
-        cellPadding: 4,
-        overflow: 'linebreak'
+        cellPadding: 4
       }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
@@ -122,20 +137,18 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Credit Card', 'Amount']],
-      body: data.creditCardWithdrawals.map(entry => [entry.name, entry.amount.toString() + ' ৳']),
+      body: data.creditCardWithdrawals.map(entry => [entry.name, '৳ ' + entry.amount.toString()]),
       theme: 'grid',
       headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [245, 245, 245] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' }
       },
       styles: { 
-        font: 'helvetica',
         fontSize: 10,
-        cellPadding: 4,
-        overflow: 'linebreak'
+        cellPadding: 4
       }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
@@ -146,20 +159,18 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bkash/Nagad', 'Amount']],
-      body: data.bkashNagadWithdrawals.map(entry => [entry.name, entry.amount.toString() + ' ৳']),
+      body: data.bkashNagadWithdrawals.map(entry => [entry.name, '৳ ' + entry.amount.toString()]),
       theme: 'grid',
       headStyles: { fillColor: primaryColor, textColor: 255, fontStyle: 'bold' },
       alternateRowStyles: { fillColor: [245, 245, 245] },
       margin: { left: 20, right: 20 },
       columnStyles: {
         0: { cellWidth: 'auto' },
-        1: { cellWidth: 'auto', halign: 'right', fontStyle: 'normal' }
+        1: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' }
       },
       styles: { 
-        font: 'helvetica',
         fontSize: 10,
-        cellPadding: 4,
-        overflow: 'linebreak'
+        cellPadding: 4
       }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
@@ -174,7 +185,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
         String(index + 1).padStart(2, '0'),
         entry.costHead,
         entry.description,
-        entry.amount.toString() + ' ৳',
+        '৳ ' + entry.amount.toString(),
         entry.remarks
       ]),
       theme: 'grid',
@@ -185,14 +196,12 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
         0: { cellWidth: 15, halign: 'center', fontStyle: 'normal' },
         1: { cellWidth: 25, fontStyle: 'normal' },
         2: { cellWidth: 60, fontStyle: 'normal' },
-        3: { cellWidth: 30, halign: 'right', fontStyle: 'normal' },
+        3: { cellWidth: 40, halign: 'right', fontStyle: 'normal', font: 'NotoSansBengali', overflow: 'hidden' },
         4: { cellWidth: 40, fontStyle: 'normal' }
       },
       styles: { 
-        font: 'helvetica',
         fontSize: 10,
-        cellPadding: 4,
-        overflow: 'linebreak'
+        cellPadding: 4
       }
     });
     yPosition = (doc as any).lastAutoTable.finalY + 10;
@@ -208,19 +217,23 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   autoTable(doc, {
     startY: yPosition,
-    body: totalsData,
+    body: [
+      ['Total Received', '৳ ' + totals.totalReceived.toString()],
+      ['Total Cost', '৳ ' + totals.totalCost.toString()],
+      ['Cash in Hand', '৳ ' + totals.cashInHand.toString()],
+      ['Cash in Bkash/Nagad', '৳ ' + totals.cashInBkashNagad.toString()]
+    ],
     theme: 'grid',
     styles: { 
       fontSize: 11, 
       fontStyle: 'bold',
-      font: 'helvetica',
       cellPadding: 4
     },
     alternateRowStyles: { fillColor: [255, 248, 225] },
     margin: { left: 20, right: 120 },
     columnStyles: {
       0: { cellWidth: 'auto', fontStyle: 'bold' },
-      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold' }
+      1: { cellWidth: 'auto', halign: 'right', fontStyle: 'bold', font: 'NotoSansBengali', overflow: 'hidden' }
     }
   });
   
