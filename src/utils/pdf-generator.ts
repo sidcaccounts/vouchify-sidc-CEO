@@ -1,5 +1,5 @@
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { VouchingBillData, VouchingBillTotals, SHORT_FORM_CODES } from '@/types/vouching-bill';
 import { convertToWords, formatCurrency } from './calculations';
 
@@ -92,7 +92,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   // Bank Withdrawals
   if (data.bankWithdrawals.length > 0) {
-    doc.autoTable({
+    autoTable(doc, {
       startY: yPosition,
       head: [['Bank Name', 'Amount']],
       body: data.bankWithdrawals.map(entry => [entry.name, formatCurrency(entry.amount)]),
@@ -106,7 +106,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   // Credit Card Withdrawals
   if (data.creditCardWithdrawals.length > 0) {
-    doc.autoTable({
+    autoTable(doc, {
       startY: yPosition,
       head: [['Credit Card', 'Amount']],
       body: data.creditCardWithdrawals.map(entry => [entry.name, formatCurrency(entry.amount)]),
@@ -120,7 +120,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   // Bkash/Nagad Withdrawals
   if (data.bkashNagadWithdrawals.length > 0) {
-    doc.autoTable({
+    autoTable(doc, {
       startY: yPosition,
       head: [['Bkash/Nagad', 'Amount']],
       body: data.bkashNagadWithdrawals.map(entry => [entry.name, formatCurrency(entry.amount)]),
@@ -134,7 +134,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   // Cost Entry Table
   if (data.costEntries.length > 0) {
-    doc.autoTable({
+    autoTable(doc, {
       startY: yPosition,
       head: [['Sl No', 'Cost Head', 'Description', 'Amount', 'Remarks']],
       body: data.costEntries.map((entry, index) => [
@@ -167,7 +167,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     ['Cash in Bkash/Nagad', formatCurrency(totals.cashInBkashNagad)]
   ];
   
-  doc.autoTable({
+  autoTable(doc, {
     startY: yPosition,
     body: totalsData,
     theme: 'grid',

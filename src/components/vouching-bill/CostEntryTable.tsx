@@ -50,7 +50,7 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
       <div className="overflow-x-auto">
         <div className="min-w-full">
           {/* Header */}
-          <div className="grid grid-cols-12 gap-2 mb-3 text-sm font-medium text-muted-foreground">
+          <div className="hidden md:grid grid-cols-12 gap-2 mb-3 text-sm font-medium text-muted-foreground">
             <div className="col-span-1">Sl No</div>
             <div className="col-span-2">Cost Head</div>
             <div className="col-span-4">Description</div>
@@ -62,15 +62,21 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
           {/* Entries */}
           <div className="space-y-2">
             {entries.map((entry, index) => (
-              <div key={entry.id} className="grid grid-cols-12 gap-2 items-center">
-                <div className="col-span-1 text-sm font-mono text-center">
+              <div key={entry.id} className="grid grid-cols-1 md:grid-cols-12 gap-3 md:gap-2 items-start">
+                <div className="col-span-1 md:col-span-1 text-sm font-mono md:text-center">
                   {String(index + 1).padStart(2, '0')}
                 </div>
                 
-                <div className="col-span-2">
+                <div className="col-span-1 md:col-span-2">
                   <Select
-                    value={entry.costHead}
-                    onValueChange={(value) => updateEntry(entry.id, 'costHead', value)}
+                    value={COST_HEAD_OPTIONS.includes(entry.costHead) ? entry.costHead : 'CUSTOM'}
+                    onValueChange={(value) => {
+                      if (value === 'CUSTOM') {
+                        updateEntry(entry.id, 'costHead', '');
+                      } else {
+                        updateEntry(entry.id, 'costHead', value);
+                      }
+                    }}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select code" />
@@ -84,9 +90,9 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                       <SelectItem value="CUSTOM">Custom</SelectItem>
                     </SelectContent>
                   </Select>
-                  {entry.costHead === 'CUSTOM' && (
+                  {(!COST_HEAD_OPTIONS.includes(entry.costHead)) && (
                     <Input
-                      value=""
+                      value={entry.costHead}
                       onChange={(e) => updateEntry(entry.id, 'costHead', e.target.value)}
                       placeholder="Enter custom code"
                       className="mt-1"
@@ -94,7 +100,7 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                   )}
                 </div>
 
-                <div className="col-span-4">
+                <div className="col-span-1 md:col-span-4">
                   <Input
                     value={entry.description}
                     onChange={(e) => updateEntry(entry.id, 'description', e.target.value)}
@@ -102,7 +108,7 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="col-span-1 md:col-span-2">
                   <Input
                     type="number"
                     value={entry.amount || ''}
@@ -111,10 +117,16 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="col-span-1 md:col-span-2">
                   <Select
-                    value={entry.remarks}
-                    onValueChange={(value) => updateEntry(entry.id, 'remarks', value)}
+                    value={REMARKS_OPTIONS.includes(entry.remarks) ? entry.remarks : 'CUSTOM'}
+                    onValueChange={(value) => {
+                      if (value === 'CUSTOM') {
+                        updateEntry(entry.id, 'remarks', '');
+                      } else {
+                        updateEntry(entry.id, 'remarks', value);
+                      }
+                    }}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select" />
@@ -128,9 +140,9 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                       <SelectItem value="CUSTOM">Custom</SelectItem>
                     </SelectContent>
                   </Select>
-                  {entry.remarks === 'CUSTOM' && (
+                  {(!REMARKS_OPTIONS.includes(entry.remarks)) && (
                     <Input
-                      value=""
+                      value={entry.remarks}
                       onChange={(e) => updateEntry(entry.id, 'remarks', e.target.value)}
                       placeholder="Enter custom remark"
                       className="mt-1"
@@ -138,7 +150,7 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                   )}
                 </div>
 
-                <div className="col-span-1">
+                <div className="col-span-1 md:col-span-1">
                   <Button
                     variant="outline"
                     size="sm"
