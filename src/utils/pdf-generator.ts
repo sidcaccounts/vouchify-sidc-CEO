@@ -95,7 +95,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bank Name', 'Amount']],
-      body: data.bankWithdrawals.map(entry => [entry.name, formatCurrency(entry.amount)]),
+      body: data.bankWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString('en-US') + ' ৳']),
       theme: 'grid',
       headStyles: { fillColor: primaryColor, textColor: 255 },
       alternateRowStyles: { fillColor: [245, 245, 245] },
@@ -109,7 +109,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Credit Card', 'Amount']],
-      body: data.creditCardWithdrawals.map(entry => [entry.name, formatCurrency(entry.amount)]),
+      body: data.creditCardWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString('en-US') + ' ৳']),
       theme: 'grid',
       headStyles: { fillColor: primaryColor, textColor: 255 },
       alternateRowStyles: { fillColor: [245, 245, 245] },
@@ -123,7 +123,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
     autoTable(doc, {
       startY: yPosition,
       head: [['Bkash/Nagad', 'Amount']],
-      body: data.bkashNagadWithdrawals.map(entry => [entry.name, formatCurrency(entry.amount)]),
+      body: data.bkashNagadWithdrawals.map(entry => [entry.name, entry.amount.toLocaleString('en-US') + ' ৳']),
       theme: 'grid',
       headStyles: { fillColor: primaryColor, textColor: 255 },
       alternateRowStyles: { fillColor: [245, 245, 245] },
@@ -141,7 +141,7 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
         String(index + 1).padStart(2, '0'),
         entry.costHead,
         entry.description,
-        formatCurrency(entry.amount),
+        entry.amount.toLocaleString('en-US') + ' ৳',
         entry.remarks
       ]),
       theme: 'grid',
@@ -161,10 +161,10 @@ export const generatePDF = (data: VouchingBillData, totals: VouchingBillTotals) 
   
   // Totals Section
   const totalsData = [
-    ['Total Received', formatCurrency(totals.totalReceived)],
-    ['Total Cost', formatCurrency(totals.totalCost)],
-    ['Cash in Hand', formatCurrency(totals.cashInHand)],
-    ['Cash in Bkash/Nagad', formatCurrency(totals.cashInBkashNagad)]
+    ['Total Received', totals.totalReceived.toLocaleString('en-US') + ' ৳'],
+    ['Total Cost', totals.totalCost.toLocaleString('en-US') + ' ৳'],
+    ['Cash in Hand', totals.cashInHand.toLocaleString('en-US') + ' ৳'],
+    ['Cash in Bkash/Nagad', totals.cashInBkashNagad.toLocaleString('en-US') + ' ৳']
   ];
   
   autoTable(doc, {
