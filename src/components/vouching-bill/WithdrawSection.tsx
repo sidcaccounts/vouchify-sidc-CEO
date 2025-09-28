@@ -11,6 +11,7 @@ interface WithdrawSectionProps {
   onEntriesChange: (entries: WithdrawEntry[]) => void;
   placeholder?: string;
   icon?: React.ReactNode;
+  suggestions?: string[];
 }
 
 export const WithdrawSection = ({ 
@@ -18,7 +19,8 @@ export const WithdrawSection = ({
   entries, 
   onEntriesChange, 
   placeholder = "Enter name",
-  icon 
+  icon,
+  suggestions = []
 }: WithdrawSectionProps) => {
   const addEntry = () => {
     const newEntry: WithdrawEntry = {
@@ -60,6 +62,33 @@ export const WithdrawSection = ({
           Total: {formatCurrency(total)}
         </div>
       </div>
+
+      {/* Suggestions */}
+      {suggestions.length > 0 && (
+        <div className="mb-4">
+          <p className="text-sm text-muted-foreground mb-2">Quick suggestions:</p>
+          <div className="flex flex-wrap gap-2">
+            {suggestions.map((suggestion, index) => (
+              <Button
+                key={index}
+                variant="outline"
+                size="sm"
+                className="text-xs hover:bg-primary/10"
+                onClick={() => {
+                  const newEntry: WithdrawEntry = {
+                    id: generateId(),
+                    name: suggestion,
+                    amount: 0
+                  };
+                  onEntriesChange([...entries, newEntry]);
+                }}
+              >
+                {suggestion}
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="space-y-3">
         {entries.map((entry) => (

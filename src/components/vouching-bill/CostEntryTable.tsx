@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CostEntry, COST_HEAD_OPTIONS, REMARKS_OPTIONS } from '@/types/vouching-bill';
+import { CostEntry, COST_HEAD_OPTIONS, REMARKS_OPTIONS, SHORT_FORM_CODES } from '@/types/vouching-bill';
 import { formatCurrency, generateId } from '@/utils/calculations';
 import { Plus, Trash2, Receipt } from 'lucide-react';
 
@@ -79,7 +79,7 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                     }}
                   >
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select code" />
+                      <SelectValue placeholder="Select category" />
                     </SelectTrigger>
                     <SelectContent>
                       {COST_HEAD_OPTIONS.map((option) => (
@@ -94,7 +94,7 @@ export const CostEntryTable = ({ entries, onEntriesChange }: CostEntryTableProps
                     <Input
                       value={entry.costHead}
                       onChange={(e) => updateEntry(entry.id, 'costHead', e.target.value)}
-                      placeholder="Enter custom code"
+                      placeholder="Enter custom category"
                       className="mt-1"
                     />
                   )}

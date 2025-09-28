@@ -47,7 +47,19 @@ export const SHORT_FORM_CODES = {
   'BP': 'Business Promotional'
 };
 
-export const COST_HEAD_OPTIONS = Object.keys(SHORT_FORM_CODES);
+export const COST_HEAD_OPTIONS = Object.values(SHORT_FORM_CODES);
+
+export const BANK_SUGGESTIONS = [
+  'City Savings 3001',
+  'TBL Current 2541',
+  'TBL Savings 9633',
+  'TBL Mudaraba SV 1164'
+];
+
+export const CREDIT_CARD_SUGGESTIONS = [
+  'City AMEX Credit 5398',
+  'City Visa Credit 0017'
+];
 
 export const REMARKS_OPTIONS = [
   'Urgent',

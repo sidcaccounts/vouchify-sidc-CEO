@@ -6,7 +6,7 @@ import { ShortFormReference } from './vouching-bill/ShortFormReference';
 import { WithdrawSection } from './vouching-bill/WithdrawSection';
 import { CostEntryTable } from './vouching-bill/CostEntryTable';
 import { SummarySection } from './vouching-bill/SummarySection';
-import { VouchingBillData, VouchingBillTotals } from '@/types/vouching-bill';
+import { VouchingBillData, VouchingBillTotals, BANK_SUGGESTIONS, CREDIT_CARD_SUGGESTIONS } from '@/types/vouching-bill';
 import { calculateTotals, generateId } from '@/utils/calculations';
 import { generatePDF } from '@/utils/pdf-generator';
 import { FileDown, RotateCcw } from 'lucide-react';
@@ -94,6 +94,7 @@ export const VouchingBillForm = () => {
             entries={data.bankWithdrawals}
             onEntriesChange={(entries) => setData(prev => ({ ...prev, bankWithdrawals: entries }))}
             placeholder="Bank name (e.g., DBBL, City Bank)"
+            suggestions={BANK_SUGGESTIONS}
           />
           
           <WithdrawSection
@@ -101,6 +102,7 @@ export const VouchingBillForm = () => {
             entries={data.creditCardWithdrawals}
             onEntriesChange={(entries) => setData(prev => ({ ...prev, creditCardWithdrawals: entries }))}
             placeholder="Card type (e.g., DBBL Visa, Standard Chartered)"
+            suggestions={CREDIT_CARD_SUGGESTIONS}
           />
           
           <WithdrawSection
